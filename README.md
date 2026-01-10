@@ -2,21 +2,19 @@
 
 **Stop hardcoding cookies. Persistent auth for AI agents.**
 
-```bash
-pip install agent-auth
+```python
+# Before (hardcoding cookies)
+cookies = {"session_id": "abc123..."}  # breaks constantly
+
+# After (AgentAuth)
+from agent_auth import Vault
+vault = Vault()
+vault.unlock("password")
+cookies = vault.get_session("linkedin.com")
 ```
 
-## Quick Start
-
-```python
-from agent_auth import Agent, AgentAuthClient
-
-agent = Agent.load("sales-bot")
-client = AgentAuthClient(agent)
-session = client.get_session("linkedin.com")
-
-import requests
-response = requests.get("https://linkedin.com/feed", cookies=session)
+```bash
+pip install agent-auth
 ```
 
 ## The Problem
@@ -35,18 +33,28 @@ Every AI agent developer hardcodes cookies in their code. Sessions expire and br
 
 1. **Export cookies** with the Chrome extension while logged into any site
 2. **Store them** in an encrypted vault (`agent-auth add linkedin.com`)
-3. **Your agent retrieves them** securely on-demand with scope-based access control
+3. **Your agent retrieves them** securely on-demand
 
-Sessions are encrypted at rest, each agent has a cryptographic identity, and every access is logged for audit trails.
+## Quick Start
+
+```python
+from agent_auth import Agent, AgentAuthClient
+
+agent = Agent.load("sales-bot")
+client = AgentAuthClient(agent)
+session = client.get_session("linkedin.com")
+
+import requests
+response = requests.get("https://linkedin.com/feed", cookies=session)
+```
 
 ## Features
 
-- **Encrypted Vault** - Sessions stored with AES encryption using PBKDF2 key derivation
-- **Agent Identities** - Each agent gets a unique cryptographic identity (Ed25519 keypair)
+- **Encrypted Storage** - Sessions stored securely in a local vault
 - **Scoped Access** - Agents can only access domains you explicitly approve
-- **Audit Logging** - Track which agent accessed what domain and when
 - **No Hardcoded Secrets** - Sessions managed separately from your code
 - **Session Expiration** - Automatic checking and notifications when sessions expire
+- **Easy Management** - Export cookies with browser extension, store with CLI
 
 ## LangChain Integration
 
@@ -141,6 +149,15 @@ agent-auth add linkedin.com
 | `agent-auth list` | List all stored sessions |
 | `agent-auth create-agent <name> --scopes <domains>` | Create agent identity |
 | `agent-auth agents` | List all registered agents |
+
+## Technical Details
+
+AgentAuth uses industry-standard security practices:
+
+- **Encryption** - Sessions encrypted with AES-256 using PBKDF2 key derivation (100,000 iterations)
+- **Agent Identities** - Each agent has a unique cryptographic identity (Ed25519 keypair) for authentication
+- **Audit Logging** - All session access is logged with agent ID, domain, and timestamp
+- **SQLite Database** - Sessions stored in encrypted SQLite database at `~/.agent-auth/vault.db`
 
 ## License
 
