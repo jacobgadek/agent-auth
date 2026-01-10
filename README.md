@@ -75,6 +75,17 @@ response = requests.get("https://linkedin.com/feed", cookies=session)
 | `agent-auth create-agent <name> --scopes <domains>` | Create agent identity |
 | `agent-auth agents` | List all registered agents |
 
+## Chrome Extension
+
+Export cookies from any site with one click:
+
+![AgentAuth Chrome Extension](docs/images/extension.png)
+
+1. Install the extension from `browser-extension/` folder
+2. Go to any site you're logged into
+3. Click the extension → Export Session Cookies
+4. Use `agent-auth add <domain>` and paste the cookies
+
 ## Why AgentAuth?
 
 As AI Agents proliferate, Agent Identity becomes a massive security hole. AgentAuth fixes this by treating agents as first-class identities with scoped, auditable access.
