@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      width: 320px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+    }
+    h1 {
+      font-size: 18px;
+      margin: 0 0 12px 0;
+    }
+    .domain {
+      background: #f1f5f9;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-family: monospace;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    .success {
+      color: #16a34a;
+      margin-top: 12px;
+      display: none;
+    }
+    .cookies-output {
+      margin-top: 12px;
+      padding: 8px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 11px;
+      max-height: 150px;
+      overflow-y: auto;
+      word-break: break-all;
+      display: none;
+    }
+    .copy-btn {
+      margin-top: 8px;
+      background: #64748b;
+    }
+    .copy-btn:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 AgentAuth</h1>
+  <p>Export session for current site:</p>
+  <div class="domain" id="domain">Loading...</div>
+  <button id="export">Export Session Cookies</button>
+  <div class="cookies-output" id="output"></div>
+  <button class="copy-btn" id="copy" style="display:none;">Copy to Clipboard</button>
+  <p class="success" id="success">✓ Copied! Paste into: agent-auth add</p>
+  <script src="popup.js"></script>
+</body>
+</html>

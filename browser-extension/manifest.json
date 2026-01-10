@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "AgentAuth Session Exporter",
+  "version": "1.0.0",
+  "description": "Export browser sessions for AI agents",
+  "permissions": ["cookies", "activeTab", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "icon.png"
+    }
+  },
+  "icons": {
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}
