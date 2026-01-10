@@ -9,6 +9,7 @@ Usage:
 """
 
 import asyncio
+import getpass
 from playwright.async_api import async_playwright
 from agent_auth.vault import Vault
 
@@ -26,7 +27,6 @@ def get_cookies_for_playwright(vault: Vault, domain: str) -> list:
     
     playwright_cookies = []
     for name, value in raw_cookies.items():
-        # Clean the value - remove quotes and escape characters
         clean_value = str(value)
         if clean_value.startswith('"') and clean_value.endswith('"'):
             clean_value = clean_value[1:-1]
@@ -52,7 +52,7 @@ async def main():
     print()
     
     print("[1/4] Connecting to vault...")
-    vault_password = input("      Vault password: ")
+    vault_password = getpass.getpass("      Vault password: ")
     
     try:
         vault = Vault()
@@ -79,14 +79,13 @@ async def main():
         browser = await p.chromium.launch(headless=False)
         context = await browser.new_context()
         
-        # Add cookies one by one, skip any that fail
         success_count = 0
         for cookie in cookies:
             try:
                 await context.add_cookies([cookie])
                 success_count += 1
             except Exception:
-                pass  # Skip invalid cookies
+                pass
         
         print(f"      Injected {success_count}/{len(cookies)} cookies")
         

@@ -122,6 +122,35 @@ PYTHONPATH=. python examples/github_agent.py
 
 The example accesses GitHub notifications and starred repos using your stored session cookies. All examples are available in the `examples/` folder.
 
+### Browser Automation
+
+![Automatically log into any site with stored sessions](docs/images/agentex3.gif)
+
+Use AgentAuth with Playwright, Selenium, or any browser automation tool. Simply load your stored session cookies into the browser context to automatically authenticate without manual login flows.
+
+```python
+from agent_auth import Agent, AgentAuthClient
+from playwright.sync_api import sync_playwright
+
+agent = Agent.load("sales-bot")
+client = AgentAuthClient(agent)
+cookies = client.get_session("linkedin.com")
+
+with sync_playwright() as p:
+    browser = p.chromium.launch()
+    context = browser.new_context()
+    
+    # Load cookies from AgentAuth
+    context.add_cookies([
+        {"name": k, "value": v, "domain": ".linkedin.com", "path": "/"}
+        for k, v in cookies.items()
+    ])
+    
+    page = context.new_page()
+    page.goto("https://linkedin.com/feed")
+    # Already logged in!
+```
+
 ## Setup
 
 ### 1. Initialize the vault
