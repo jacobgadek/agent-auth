@@ -87,6 +87,33 @@ response = agent.run("Get my LinkedIn notifications")
 
 The agent will automatically use the `authenticated_request` tool to access LinkedIn with your stored session cookies, making authenticated API calls on your behalf.
 
+## Examples
+
+Working demo that accesses GitHub using stored sessions.
+
+### GitHub Agent Demo
+
+**Setup:**
+
+1. Create the agent:
+```bash
+agent-auth create-agent github-agent --scopes github.com
+```
+
+2. Export cookies from github.com using the Chrome extension
+
+3. Add the session:
+```bash
+agent-auth add github.com
+```
+
+**Run:**
+```bash
+PYTHONPATH=. python examples/github_agent.py
+```
+
+The example accesses GitHub notifications and starred repos using your stored session cookies. All examples are available in the `examples/` folder.
+
 ## Setup
 
 ### 1. Initialize the vault
