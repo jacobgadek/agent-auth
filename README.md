@@ -1,59 +1,13 @@
 # AgentAuth
 
-**The open-source identity and session management SDK for AI Agents.**
+**Stop hardcoding cookies. Persistent auth for AI agents.**
 
-AI Agents need to authenticate to websites and services. Currently, developers hardcode cookies (insecure, breaks often) or get blocked by 2FA/Captchas. AgentAuth solves this.
-
-## The Problem
-```python
-# What developers do today (insecure, fragile)
-cookies = {"li_at": "AQEDAT...hardcoded..."}
-response = requests.get("https://linkedin.com/feed", cookies=cookies)
-```
-
-## The Solution
-```python
-# With AgentAuth (secure, managed, audited)
-from agent_auth import Agent, AgentAuthClient
-
-agent = Agent.load("sales-bot")
-client = AgentAuthClient(agent)
-
-session = client.get_session("linkedin.com")
-response = requests.get("https://linkedin.com/feed", cookies=session)
-```
-
-## Features
-
-- Encrypted Vault - Sessions stored with AES encryption
-- Agent Identities - Cryptographic identity for each agent (Ed25519)
-- Scoped Access - Agents can only access approved domains
-- Audit Logging - Track which agent accessed what and when
-- No Hardcoded Secrets - Sessions managed separately from code
-
-## Installation
 ```bash
 pip install agent-auth
 ```
 
 ## Quick Start
 
-### 1. Initialize the vault
-```bash
-agent-auth init
-```
-
-### 2. Create an agent
-```bash
-agent-auth create-agent sales-bot --scopes linkedin.com,gmail.com
-```
-
-### 3. Add a session
-```bash
-agent-auth add linkedin.com
-```
-
-### 4. Use in your code
 ```python
 from agent_auth import Agent, AgentAuthClient
 
@@ -64,6 +18,35 @@ session = client.get_session("linkedin.com")
 import requests
 response = requests.get("https://linkedin.com/feed", cookies=session)
 ```
+
+## The Problem
+
+Every AI agent developer hardcodes cookies in their code. Sessions expire and break your agent. There's no way to track which agent accessed what. One hardcoded cookie leak, and your entire account is compromised.
+
+**AgentAuth fixes this.**
+
+## How It Works
+
+![AgentAuth Chrome Extension](docs/images/extension.png)
+
+![Export cookies](docs/images/agentex1.gif)
+
+![Agent retrieves session](docs/images/agentex2.gif)
+
+1. **Export cookies** with the Chrome extension while logged into any site
+2. **Store them** in an encrypted vault (`agent-auth add linkedin.com`)
+3. **Your agent retrieves them** securely on-demand with scope-based access control
+
+Sessions are encrypted at rest, each agent has a cryptographic identity, and every access is logged for audit trails.
+
+## Features
+
+- **Encrypted Vault** - Sessions stored with AES encryption using PBKDF2 key derivation
+- **Agent Identities** - Each agent gets a unique cryptographic identity (Ed25519 keypair)
+- **Scoped Access** - Agents can only access domains you explicitly approve
+- **Audit Logging** - Track which agent accessed what domain and when
+- **No Hardcoded Secrets** - Sessions managed separately from your code
+- **Session Expiration** - Automatic checking and notifications when sessions expire
 
 ## LangChain Integration
 
@@ -104,30 +87,33 @@ response = agent.run("Get my LinkedIn notifications")
 
 The agent will automatically use the `authenticated_request` tool to access LinkedIn with your stored session cookies, making authenticated API calls on your behalf.
 
+## Setup
+
+### 1. Initialize the vault
+```bash
+agent-auth init
+```
+
+### 2. Create an agent
+```bash
+agent-auth create-agent sales-bot --scopes linkedin.com,gmail.com
+```
+
+### 3. Add a session
+```bash
+agent-auth add linkedin.com
+# Paste the cookies exported from the Chrome extension
+```
+
 ## CLI Commands
 
 | Command | Description |
 |---------|-------------|
 | `agent-auth init` | Initialize encrypted vault |
 | `agent-auth add <domain>` | Add a session for a domain |
-| `agent-auth list-sessions` | List all stored sessions |
+| `agent-auth list` | List all stored sessions |
 | `agent-auth create-agent <name> --scopes <domains>` | Create agent identity |
 | `agent-auth agents` | List all registered agents |
-
-## Chrome Extension
-
-Export cookies from any site with one click:
-
-![AgentAuth Chrome Extension](docs/images/extension.png)
-
-1. Install the extension from `browser-extension/` folder
-2. Go to any site you're logged into
-3. Click the extension → Export Session Cookies
-4. Use `agent-auth add <domain>` and paste the cookies
-
-## Why AgentAuth?
-
-As AI Agents proliferate, Agent Identity becomes a massive security hole. AgentAuth fixes this by treating agents as first-class identities with scoped, auditable access.
 
 ## License
 
