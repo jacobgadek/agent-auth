@@ -65,6 +65,45 @@ import requests
 response = requests.get("https://linkedin.com/feed", cookies=session)
 ```
 
+## LangChain Integration
+
+AgentAuth provides seamless integration with LangChain agents through pre-built tools that handle authenticated requests automatically.
+
+### Available Tools
+
+1. **`authenticated_request`** - Makes authenticated HTTP requests using stored session cookies. Perfect for accessing sites that require login (LinkedIn, Gmail, etc.)
+2. **`get_session_cookies`** - Retrieves session cookies for a domain. Use this when you need cookies to make your own custom requests.
+
+### Example Usage
+
+```python
+from langchain_openai import ChatOpenAI
+from langchain.agents import initialize_agent, AgentType
+from agent_auth.langchain import get_agentauth_tools
+
+# Get AgentAuth tools for your agent
+tools = get_agentauth_tools(
+    agent_name="sales-bot",
+    vault_password="your-vault-password"
+)
+
+# Initialize the LLM
+llm = ChatOpenAI(model="gpt-4", temperature=0)
+
+# Create the agent with AgentAuth tools
+agent = initialize_agent(
+    tools=tools,
+    llm=llm,
+    agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+    verbose=True
+)
+
+# Run a query that requires authentication
+response = agent.run("Get my LinkedIn notifications")
+```
+
+The agent will automatically use the `authenticated_request` tool to access LinkedIn with your stored session cookies, making authenticated API calls on your behalf.
+
 ## CLI Commands
 
 | Command | Description |
